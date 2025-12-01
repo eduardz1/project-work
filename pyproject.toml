@@ -1,0 +1,14 @@
+[project]
+name = "travelling-goblin-problem"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "icecream>=2.1.8",
+    "ipykernel>=7.1.0",
+    "matplotlib>=3.10.7",
+    "networkx>=3.6",
+    "numba>=0.62.1",
+    "numpy>=2.3.5",
+]
