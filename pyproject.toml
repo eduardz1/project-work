@@ -1,14 +1,32 @@
 [project]
-name = "travelling-goblin-problem"
+name = "tgp"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+authors = [{ name = "eduard", email = "occhipinti.eduard@icloud.com" }]
 requires-python = ">=3.12"
 dependencies = [
     "icecream>=2.1.8",
-    "ipykernel>=7.1.0",
     "matplotlib>=3.10.7",
     "networkx>=3.6",
     "numba>=0.62.1",
     "numpy>=2.3.5",
+    "nx-parallel @ git+https://github.com/networkx/nx-parallel.git@4115c227c01989dfd43bb1fb65e28c526e82f7e9",
+    "pip>=25.3",
 ]
+
+[project.optional-dependencies]
+gpu = ["numba-cuda[cu12]>=0.21.2", "nx-cugraph-cu12>=25.10.0"]
+
+[[tool.uv.index]]
+url = "https://pypi.nvidia.com/"
+
+[project.scripts]
+tgp = "tgp.__main__:main"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
