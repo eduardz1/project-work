@@ -1,9 +1,11 @@
-import networkx as nx
-import numpy as np
+from functools import cached_property
 from itertools import combinations
 from typing import cast
-from functools import cached_property
+
 import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+import numpy.typing as npt
 
 MIN_GOLD = 1.0
 MAX_GOLD = 1000.0
@@ -53,42 +55,15 @@ class Problem:
         )
 
     @cached_property
-    def dists(self) -> dict[int, dict[int, float]]:
-        return cast(
-            dict[int, dict[int, float]],
-            {
-                u: {
-                    v: nx.path_weight(self.graph, self.paths[u][v], weight="dist")
-                    for v in self.graph
-                }
-                for u in self.graph
-            },
-        )
-
-    def cost(self, path, weight):
-        dist = nx.path_weight(self.graph, path, weight="dist")
-        return dist + (self.alpha * dist * weight) ** self.beta
-
-    def baseline(self) -> float:
-        """
-        Greedy approach which takes 100% of the gold from each node and then
-        goes back to node 0 using Dijkstra's algorithm to find the shortest path
-        between each node and node 0.
-
-        Returns:
-            float: Total cost of the baseline solution.
-        """
-
-        cost = 0
-
-        for dest, path in nx.single_source_dijkstra_path(
-            self.graph, source=0, weight="dist"
-        ).items():
-            if dest == 0:
-                continue
-            cost += self.cost(path, 0) + self.cost(path, self.graph.nodes[dest]["gold"])
-
-        return cost
+    def dists(self) -> npt.NDArray[np.float32]:
+        num_nodes = len(self.graph.nodes)
+        dist_matrix = np.zeros((num_nodes, num_nodes), dtype=np.float32)
+        for i in self.graph.nodes:
+            for j in self.graph.nodes:
+                dist_matrix[i, j] = nx.path_weight(
+                    self.graph, self.paths[i][j], weight="dist"
+                )
+        return dist_matrix
 
     def plot(self):
         plt.figure(figsize=(10, 10))

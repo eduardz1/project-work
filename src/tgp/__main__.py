@@ -1,10 +1,13 @@
 import itertools
-import numpy as np
+
 import networkx as nx
 from numba import cuda
 
 from tgp.problem.problem import Problem
-from tgp.solution.solution import solution, evaluate_solution
+from tgp.solution.baseline import baseline
+from tgp.solution.ga.crossovers import iox, ox, pmx
+from tgp.solution.ga.mutations import inversion_mutation, swap_mutation
+from tgp.solution.solution import evaluate_solution, solution
 
 
 def main():
@@ -13,14 +16,15 @@ def main():
     alphas = [0.1, 1.0, 10.0]
     betas = [0.5, 1.0, 2.0]
 
+    mutations = [swap_mutation, inversion_mutation]
+    crossovers = [pmx, ox, iox]
+
     problems = [
         Problem(*p) for p in itertools.product(graph_sizes, alphas, betas, densities)
     ]
 
     if cuda.is_available():
-        nx.config.backend_priority = [
-            "cugraph",
-        ]
+        nx.config.backend_priority = ["cugraph"]
         nx.config.warnings_to_ignore.add("cache")
 
     for p in problems:
@@ -29,23 +33,17 @@ def main():
         )
         sol = solution(p)
 
-        dist_matrix = np.zeros(
-            (len(p.graph.nodes), len(p.graph.nodes)), dtype=np.float32
-        )
-        for i in p.graph.nodes:
-            for j in p.graph.nodes:
-                dist_matrix[i, j] = p.dists[i][j]
-
         total_cost = evaluate_solution(
             sol,
-            dist_matrix,
+            p.dists,
             p.alpha,
             p.beta,
         )
         print("Total Cost of Solution:", total_cost)
-        base = p.baseline()
+        base = baseline(p)
         print("Baseline Cost:", base)
-        print("Improvement: {:.2f}%".format((base - total_cost) / base * 100))
+        improvement = (base - total_cost) / base * 100
+        print(f"Improvement: {improvement:.2f}%")
         print("-" * 40)
 
 

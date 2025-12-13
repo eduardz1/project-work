@@ -1,6 +1,7 @@
 import os
-import sys
 import site
+import sys
+from importlib.util import find_spec
 from pathlib import Path
 
 
@@ -10,7 +11,13 @@ def configure_cuda_env():
     found when installed in a virtual environment.
     """
 
+    if "pytest" in sys.modules or "PYTEST_CURRENT_TEST" in os.environ:
+        return
+
     if os.environ.get("TGP_CUDA_CONFIGURED"):
+        return
+
+    if find_spec("numba.cuda") is None:
         return
 
     libs_to_add = []
