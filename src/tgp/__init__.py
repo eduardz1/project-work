@@ -55,6 +55,8 @@ def configure_cuda_env():
 
         os.environ["LD_LIBRARY_PATH"] = final_ld_path
         os.environ["TGP_CUDA_CONFIGURED"] = "1"
+        os.environ["NETWORKX_BACKEND_PRIORITY"] = "cugraph"
+        os.environ["NETWORKX_WARNINGS_TO_IGNORE"] = "cache"
 
         try:
             # Re-execute the current script

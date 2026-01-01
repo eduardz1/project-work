@@ -1,5 +1,6 @@
 import numpy as np
 from numba import njit
+from numba.typed import List
 
 from tgp.solution.ga.individual import Individual
 
@@ -70,11 +71,13 @@ def pmx(parent1: Individual, parent2: Individual) -> Individual:
     """
 
     n = len(parent1.tour)
-    start, end = sorted(np.random.choice(range(n), size=2, replace=False))
+    start, end = sorted(np.random.choice(n, size=2, replace=False))
 
     seg1 = parent1.tour[start:end]
     seg2 = parent2.tour[start:end]
-    child = [-1] * n
+    child = List()
+    for _ in range(n):
+        child.append(np.int32(-1))
     child[start:end] = seg1
 
     # iterate outside the copied segment
@@ -109,9 +112,11 @@ def ox(parent1: Individual, parent2: Individual) -> Individual:
     """
 
     n = len(parent1.tour)
-    start, end = sorted(np.random.choice(range(n), size=2, replace=False))
+    start, end = sorted(np.random.choice(n, size=2, replace=False))
 
-    child = [-1] * n
+    child = List()
+    for _ in range(n):
+        child.append(np.int32(-1))
     child[start:end] = parent1.tour[start:end]
 
     current_pos = end % n

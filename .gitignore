@@ -1,3 +1,6 @@
 **/__pycache__/
 old
 profile*
+*.db
+*.pdf
+upgrade.py

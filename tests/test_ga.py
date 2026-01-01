@@ -1,6 +1,7 @@
 from tests.validate import validate_solution
 from tgp.problem.problem import Problem
-from tgp.solution.solution import evaluate_solution, solution
+from tgp.solution.ga.common import evaluate_solution
+from tgp.solution.solution import solution
 
 
 def test_ga_beta_gt_one():

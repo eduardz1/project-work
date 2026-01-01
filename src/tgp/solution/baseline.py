@@ -3,7 +3,7 @@ import networkx as nx
 from tgp.problem.problem import Problem
 
 
-def baseline(problem: Problem) -> float:
+def greedy(problem: Problem) -> float:
     """
     Greedy approach which takes 100% of the gold from each node and then
     goes back to node 0 using Dijkstra's algorithm to find the shortest path
@@ -21,11 +21,14 @@ def baseline(problem: Problem) -> float:
     ).items():
         if dest == 0:
             continue
-        dist = nx.path_weight(problem.graph, path, weight="dist")
 
-        cost += (  # Cost (0 -> dest -> 0)
-            2 * dist
-            + (problem.alpha * dist * problem.graph.nodes[dest]["gold"]) ** problem.beta
-        )
+        for c1, c2 in zip(path, path[1:]):
+            dist = problem.graph[c1][c2]["dist"]
+
+            cost += (  # Cost (0 -> dest -> 0)
+                2 * dist
+                + (problem.alpha * dist * problem.graph.nodes[dest]["gold"])
+                ** problem.beta
+            )
 
     return cost

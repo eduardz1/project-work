@@ -6,6 +6,12 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import numpy.typing as npt
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
 
 MIN_GOLD = 1.0
 MAX_GOLD = 1000.0
@@ -49,10 +55,17 @@ class Problem:
 
     @cached_property
     def paths(self) -> dict[int, dict[int, list[int]]]:
-        return cast(
-            dict[int, dict[int, list[int]]],
-            dict(nx.shortest_path(self.graph, weight="dist")),
-        )
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            TimeElapsedColumn(),
+            transient=True,
+        ) as progress:
+            progress.add_task("Computing all shortest paths...", total=1)
+            return cast(
+                dict[int, dict[int, list[int]]],
+                dict(nx.shortest_path(self.graph, weight="dist")),
+            )
 
     @cached_property
     def dists(self) -> npt.NDArray[np.float32]:

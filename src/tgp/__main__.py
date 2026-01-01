@@ -1,50 +1,64 @@
-import itertools
+from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 
-import networkx as nx
-from numba import cuda
-
-from tgp.problem.problem import Problem
-from tgp.solution.baseline import baseline
-from tgp.solution.ga.crossovers import iox, ox, pmx
-from tgp.solution.ga.mutations import inversion_mutation, swap_mutation
-from tgp.solution.solution import evaluate_solution, solution
+from tgp.cli.utils import (
+    parse_args,
+    print_benchmark_table,
+    run_single_problem,
+    save_results_json,
+)
 
 
-def main():
-    graph_sizes = [50, 100, 200, 400]
-    densities = [0.3, 0.5, 0.7, 1.0]
-    alphas = [0.1, 1.0, 10.0]
-    betas = [0.5, 1.0, 2.0]
+def main() -> None:
+    args = parse_args()
 
-    mutations = [swap_mutation, inversion_mutation]
-    crossovers = [pmx, ox, iox]
-
-    problems = [
-        Problem(*p) for p in itertools.product(graph_sizes, alphas, betas, densities)
+    configs = [
+        (n, a, b, d)
+        for n in args.cities
+        for a in args.alphas
+        for b in args.betas
+        for d in args.densities
     ]
 
-    if cuda.is_available():
-        nx.config.backend_priority = ["cugraph"]
-        nx.config.warnings_to_ignore.add("cache")
+    results = []
 
-    for p in problems:
-        print(
-            f"Solving Problem: |V|={len(p.graph.nodes)}, alpha={p.alpha}, beta={p.beta}, density={nx.density(p.graph):.2f}"
-        )
-        sol = solution(p)
+    console = Console()
+    console.print(
+        f"[bold cyan]Running benchmark on {len(configs)} problem configurations[/bold cyan]"
+    )
+    console.print()
 
-        total_cost = evaluate_solution(
-            sol,
-            p.dists,
-            p.alpha,
-            p.beta,
-        )
-        print("Total Cost of Solution:", total_cost)
-        base = baseline(p)
-        print("Baseline Cost:", base)
-        improvement = (base - total_cost) / base * 100
-        print(f"Improvement: {improvement:.2f}%")
-        print("-" * 40)
+    with Progress(
+        SpinnerColumn(), *Progress.get_default_columns(), TimeElapsedColumn()
+    ) as progress:
+        task = progress.add_task("[cyan]Benchmarking...", total=len(configs))
+
+        for num_cities, alpha, beta, density in configs:
+            progress.update(
+                task,
+                description=f"[cyan]Cities={num_cities}, α={alpha:.2f}, β={beta:.2f}, ρ={density:.2f}",
+            )
+
+            result = run_single_problem(
+                num_cities,
+                alpha,
+                beta,
+                density,
+                args.seed,
+                args.include_path,
+                args.preset,
+            )
+            results.append(result)
+
+            progress.advance(task)
+
+    console.print()
+
+    print_benchmark_table(results)
+
+    if args.output:
+        console.print()
+        save_results_json(results, args.output)
 
 
 if __name__ == "__main__":

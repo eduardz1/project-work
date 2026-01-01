@@ -49,3 +49,65 @@ ga_lns:
   serial-number:
     arxiv: "2402.18903"
   url: "https://arxiv.org/abs/2402.18903"
+
+optuna:
+  type: Proceedings
+  title: "Optuna: A Next-Generation Hyperparameter Optimization Framework"
+  author:
+    [
+      "Takuya Akiba",
+      "Shotaro Sano",
+      "Toshihiko Yanase",
+      "Takeru Ohta",
+      "Masanori Koyama",
+    ]
+  parent:
+    - type: Conference
+      title: "The 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining"
+  page-range: "2623-2631"
+  date: 2019
+
+inver-over:
+  type: Article
+  title: "Inver-over operator for the TSP"
+  author: ["Guo Tao", "Zbigniew Michalewicz"]
+  parent:
+    - type: Book
+      title: "Parallel Problem Solving from Nature --- PPSN V"
+      editor:
+        [
+          "Agoston E. Eiben",
+          'Thomas B{"a}ck',
+          "Marc Schoenauer",
+          "Hans-Paul Schwefel",
+        ]
+      publisher: "Springer Berlin Heidelberg"
+  page-range: "803-812"
+  date: 1998
+  serial-number:
+    doi: 10.1007/BFb0056922
+    isbn: "978-3-540-49672-4"
+  abstract: "In this paper we investigate the usefulness of a new operator, inver-over, for an evolutionary algorithm for the TSP. Inver-over is based on simple inversion, however, knowledge taken from other individuals in the population influences its action. Thus, on one hand, the proposed operator is unary, since the inversion is applied to a segment of a single individual, however, the selection of a segment to be inverted is population driven, thus the operator displays some characterictics of recombination."
+
+inver-over-aco-ga:
+  type: Article
+  title: "An Efficient Hybrid Algorithm with Novel Inver-over Operator and Ant Colony Optimization for Traveling Salesman Problem"
+  author: ["Dharm Raj Singh", "Manoj Kumar Singh", "Sachchida Nand Chaurasia"]
+  parent:
+    - type: Book
+      title: "Advanced Network Technologies and Intelligent Computing"
+      editor:
+        [
+          "Anshul Verma",
+          "Pradeepika Verma",
+          "Kiran Kumar Pattanaik",
+          "Sanjay Kumar Dhurandher",
+          "Isaac Woungang",
+        ]
+      publisher: "Springer Nature Switzerland"
+  page-range: "331-343"
+  date: 2024
+  serial-number:
+    isbn: "978-3-031-64067-4"
+    doi: 10.1007/978-3-031-64067-4_22
+  abstract: "In this research paper, we present a hybrid algorithm that merges the principles of Genetic Algorithm (GA) and Ant Colony Optimization (ACO). Our algorithm consists of two distinct stages. In the first stage, we employ Ant Colony Optimization to establish an initial population, and we utilize the proposed Inver-over (IO) heuristic to obtain suboptimal solutions for the Euclidean Traveling Salesman Problem (TSP). The proposed Inver-over operator is used to refine the solution obtained through ACO. Subsequently, this refined solution is incorporated into the Genetic Algorithm (GA) for the second stage. In the second stage of our algorithm, we apply GA with our proposed crossover operator and a 2-optimal heuristic to further refine the solution with the goal of achieving global optimality. To assess the effectiveness of our proposed algorithm, we rely on standard benchmark data from TSPLIB. The experimental results indicate that our hybrid algorithm outperforms recent methods and exhibits greater efficiency when compared to other reported methods."

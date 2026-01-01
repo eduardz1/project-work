@@ -1,0 +1,741 @@
+{
+  "results": [
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 181.07280017699696,
+      "baseline_cost": 407.64892578125,
+      "improvement_percent": 55.5811882019043
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 156.18030410305323,
+      "baseline_cost": 277.3465881347656,
+      "improvement_percent": 43.687679290771484
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 149.10377609431063,
+      "baseline_cost": 228.37728881835938,
+      "improvement_percent": 34.71164321899414
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 1322.6113504071864,
+      "baseline_cost": 1365.44677734375,
+      "improvement_percent": 3.137101173400879
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 983.8124724573289,
+      "baseline_cost": 1013.5553588867188,
+      "improvement_percent": 2.9345076084136963
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 949.2240252687885,
+      "baseline_cost": 984.53466796875,
+      "improvement_percent": 3.586533546447754
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 2809.0513031738315,
+      "baseline_cost": 188124.328125,
+      "improvement_percent": 98.5068130493164
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 2172.2531716279377,
+      "baseline_cost": 190470.875,
+      "improvement_percent": 98.85953521728516
+    },
+    {
+      "num_cities": 100,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 2137.888257749958,
+      "baseline_cost": 235276.5625,
+      "improvement_percent": 99.09132385253906
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 299.89052969135867,
+      "baseline_cost": 653.9389038085938,
+      "improvement_percent": 54.14089584350586
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 264.7758919061671,
+      "baseline_cost": 441.88275146484375,
+      "improvement_percent": 40.08006286621094
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 253.5517390093988,
+      "baseline_cost": 354.641845703125,
+      "improvement_percent": 28.50484275817871
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 25233.488013435366,
+      "baseline_cost": 25266.40625,
+      "improvement_percent": 0.13028353452682495
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 18794.044353198533,
+      "baseline_cost": 18811.3203125,
+      "improvement_percent": 0.09183507412672043
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 18261.09704985674,
+      "baseline_cost": 18275.15625,
+      "improvement_percent": 0.07692734897136688
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 56263.95853398644,
+      "baseline_cost": 1504134016.0,
+      "improvement_percent": 99.99625396728516
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 43702.06930473863,
+      "baseline_cost": 1523152768.0,
+      "improvement_percent": 99.99713134765625
+    },
+    {
+      "num_cities": 100,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 43118.41577431957,
+      "baseline_cost": 1881616640.0,
+      "improvement_percent": 99.9977035522461
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 452.2520101979416,
+      "baseline_cost": 973.5462646484375,
+      "improvement_percent": 53.54591751098633
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 404.7676415259842,
+      "baseline_cost": 655.3991088867188,
+      "improvement_percent": 38.24104690551758
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 388.26041405159987,
+      "baseline_cost": 518.4939575195312,
+      "improvement_percent": 25.117660522460938
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 251664.67363705105,
+      "baseline_cost": 251696.453125,
+      "improvement_percent": 0.012626816518604755
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 187407.4591904132,
+      "baseline_cost": 187421.6875,
+      "improvement_percent": 0.007594838738441467
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 182074.82821922324,
+      "baseline_cost": 182080.984375,
+      "improvement_percent": 0.003381050657480955
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 562705.099281986,
+      "baseline_cost": 1504133775360.0,
+      "improvement_percent": 99.99996185302734
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 437172.46381471463,
+      "baseline_cost": 1523153240064.0,
+      "improvement_percent": 99.9999771118164
+    },
+    {
+      "num_cities": 100,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 431371.2363426303,
+      "baseline_cost": 1881616678912.0,
+      "improvement_percent": 99.9999771118164
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 479.1139279971244,
+      "baseline_cost": 1104.74853515625,
+      "improvement_percent": 56.63140869140625
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 436.68412483304496,
+      "baseline_cost": 845.7857666015625,
+      "improvement_percent": 48.36941909790039
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 417.3868109095518,
+      "baseline_cost": 702.37060546875,
+      "improvement_percent": 40.574562072753906
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 3161.5691732210626,
+      "baseline_cost": 3257.99755859375,
+      "improvement_percent": 2.9597465991973877
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 2949.60553461823,
+      "baseline_cost": 3069.361083984375,
+      "improvement_percent": 3.901646375656128
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 2913.4036254807374,
+      "baseline_cost": 3053.984130859375,
+      "improvement_percent": 4.603185653686523
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 6837.803905020622,
+      "baseline_cost": 364065.25,
+      "improvement_percent": 98.12181854248047
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 6542.121911073159,
+      "baseline_cost": 483412.0,
+      "improvement_percent": 98.64667510986328
+    },
+    {
+      "num_cities": 300,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 6627.061341953021,
+      "baseline_cost": 668658.5,
+      "improvement_percent": 99.00890350341797
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 813.7571957518733,
+      "baseline_cost": 1811.626220703125,
+      "improvement_percent": 55.081398010253906
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 749.0034417831778,
+      "baseline_cost": 1351.640869140625,
+      "improvement_percent": 44.58561706542969
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 719.640405680492,
+      "baseline_cost": 1091.513427734375,
+      "improvement_percent": 34.069488525390625
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 60472.64461291519,
+      "baseline_cost": 60537.34765625,
+      "improvement_percent": 0.10688133537769318
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 56969.472787826846,
+      "baseline_cost": 57030.265625,
+      "improvement_percent": 0.10659772902727127
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 56657.809436609445,
+      "baseline_cost": 56745.1796875,
+      "improvement_percent": 0.15397095680236816
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 137638.59601572723,
+      "baseline_cost": 2910572544.0,
+      "improvement_percent": 99.99526977539062
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 132063.24270531832,
+      "baseline_cost": 3865459968.0,
+      "improvement_percent": 99.99658203125
+    },
+    {
+      "num_cities": 300,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 133915.7648548738,
+      "baseline_cost": 5347442688.0,
+      "improvement_percent": 99.99748992919922
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 1244.4121983761434,
+      "baseline_cost": 2728.932373046875,
+      "improvement_percent": 54.39929962158203
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 1151.3850900681732,
+      "baseline_cost": 2008.08349609375,
+      "improvement_percent": 42.6624870300293
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 1108.3696450332773,
+      "baseline_cost": 1596.501953125,
+      "improvement_percent": 30.575117111206055
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 603126.2806091829,
+      "baseline_cost": 603183.75,
+      "improvement_percent": 0.009532749652862549
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 568198.1072871172,
+      "baseline_cost": 568238.625,
+      "improvement_percent": 0.007127287331968546
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 565343.8663693947,
+      "baseline_cost": 565398.1875,
+      "improvement_percent": 0.00960606150329113
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 1376869.878706801,
+      "baseline_cost": 2910573821952.0,
+      "improvement_percent": 99.99995422363281
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 1321284.1753871327,
+      "baseline_cost": 3865460080640.0,
+      "improvement_percent": 99.99996185302734
+    },
+    {
+      "num_cities": 300,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 1339907.520844335,
+      "baseline_cost": 5347442425856.0,
+      "improvement_percent": 99.99996948242188
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 1442.02860338514,
+      "baseline_cost": 3462.79736328125,
+      "improvement_percent": 58.35654067993164
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 1339.8524059924725,
+      "baseline_cost": 2808.111328125,
+      "improvement_percent": 52.28635025024414
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 1283.4069886886393,
+      "baseline_cost": 2341.517578125,
+      "improvement_percent": 45.18909454345703
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 10097.291131858226,
+      "baseline_cost": 10508.4814453125,
+      "improvement_percent": 3.9129388332366943
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 9877.836233946566,
+      "baseline_cost": 10391.7470703125,
+      "improvement_percent": 4.945377826690674
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 9801.733963475393,
+      "baseline_cost": 10375.525390625,
+      "improvement_percent": 5.530235767364502
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 22067.887058924356,
+      "baseline_cost": 1325888.75,
+      "improvement_percent": 98.33561706542969
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 22202.72427095363,
+      "baseline_cost": 1905018.25,
+      "improvement_percent": 98.83451843261719
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 0.05,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 22531.70589333591,
+      "baseline_cost": 2490229.75,
+      "improvement_percent": 99.0951919555664
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 2484.4915612417976,
+      "baseline_cost": 5666.509765625,
+      "improvement_percent": 56.154815673828125
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 2324.3462170932303,
+      "baseline_cost": 4482.07763671875,
+      "improvement_percent": 48.14132308959961
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 2235.764425753962,
+      "baseline_cost": 3633.6328125,
+      "improvement_percent": 38.470272064208984
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 195152.53010643742,
+      "baseline_cost": 195402.875,
+      "improvement_percent": 0.12811671197414398
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 192883.71811329463,
+      "baseline_cost": 193240.828125,
+      "improvement_percent": 0.1848001778125763
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 192495.78313362368,
+      "baseline_cost": 192940.328125,
+      "improvement_percent": 0.23040640354156494
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 445416.5371372226,
+      "baseline_cost": 10600887296.0,
+      "improvement_percent": 99.99579620361328
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 449046.1114028119,
+      "baseline_cost": 15233986560.0,
+      "improvement_percent": 99.9970474243164
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 1.0,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 456047.8559671962,
+      "baseline_cost": 19915685888.0,
+      "improvement_percent": 99.9977035522461
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.2,
+      "solution_cost": 3827.0937033746036,
+      "baseline_cost": 8526.2255859375,
+      "improvement_percent": 55.11385726928711
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.5,
+      "solution_cost": 3598.513653259508,
+      "baseline_cost": 6654.37255859375,
+      "improvement_percent": 45.922569274902344
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 0.2,
+      "density": 0.9,
+      "solution_cost": 3463.223856318411,
+      "baseline_cost": 5310.3994140625,
+      "improvement_percent": 34.78411865234375
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.2,
+      "solution_cost": 1946840.9117420728,
+      "baseline_cost": 1947034.375,
+      "improvement_percent": 0.009938191622495651
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.5,
+      "solution_cost": 1925257.930097021,
+      "baseline_cost": 1925495.25,
+      "improvement_percent": 0.012327997013926506
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 1.0,
+      "density": 0.9,
+      "solution_cost": 1922192.2631038225,
+      "baseline_cost": 1922500.5,
+      "improvement_percent": 0.016033805906772614
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.2,
+      "solution_cost": 4456100.143725385,
+      "baseline_cost": 10600896790528.0,
+      "improvement_percent": 99.99996185302734
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.5,
+      "solution_cost": 4492793.444179033,
+      "baseline_cost": 15234004680704.0,
+      "improvement_percent": 99.99996948242188
+    },
+    {
+      "num_cities": 1000,
+      "alpha": 10.0,
+      "beta": 3.0,
+      "density": 0.9,
+      "solution_cost": 4563024.075915292,
+      "baseline_cost": 19915687854080.0,
+      "improvement_percent": 99.9999771118164
+    }
+  ],
+  "summary": {
+    "total_problems": 81,
+    "mean_improvement": 48.6451731097804,
+    "median_improvement": 45.18909454345703,
+    "min_improvement": 0.003381050657480955,
+    "max_improvement": 99.9999771118164,
+    "std_improvement": 40.56303641147413
+  }
+}
