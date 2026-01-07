@@ -24,14 +24,14 @@ def main() -> None:
 
     console = Console()
     console.print(
-        f"[bold cyan]Running benchmark on {len(configs)} problem configurations[/bold cyan]"
+        f"Running benchmark on {len(configs)} problem configurations with preset '{args.preset}'."
     )
     console.print()
 
     with Progress(
         SpinnerColumn(), *Progress.get_default_columns(), TimeElapsedColumn()
     ) as progress:
-        task = progress.add_task("[cyan]Benchmarking...", total=len(configs))
+        task = progress.add_task("", total=len(configs))
 
         for num_cities, alpha, beta, density in configs:
             progress.update(
