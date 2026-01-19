@@ -6,6 +6,64 @@
 #import algorithmic: algorithm-figure, style-algorithm
 #import "lib.typ": *
 
+/// Balances lines of text while keeping the minimum amount of lines possible.
+/// Works by shrinking the width of the text until it can't be shrunk anymore.
+///
+/// Unbalanced text:
+/// #example(```
+///   #rect(width: 25em, lorem(10))
+/// ```)
+///
+/// Balanced text:
+/// #example(```
+///   #rect(width: 25em, balance(lorem(10)))
+/// ```)
+///
+/// -> content
+#let balance(
+  /// The text to balance. -> content
+  body,
+  /// Maximum number of iterations to perform. -> int
+  max-iterations: 20,
+  is-figure: false,
+  /// The precision to which to balance. -> length
+  precision: 0.1em,
+) = context layout(size => {
+  set text(hyphenate: par.justify) if text.hyphenate == auto
+  let lead = par.leading.to-absolute()
+  let line-height = measure(body).height + lead
+  let initial-size = measure(width: size.width, body)
+  let initial-lines = (initial-size.height + lead) / line-height
+
+  let high = initial-size.width
+  let low = high * (1 - (1 / initial-lines)) / 2
+
+  let extra-lines = initial-lines
+  for i in range(0, max-iterations) {
+    let candidate = high - (high - low) / (extra-lines + 1)
+    set par(justify: false)
+    let (height, width) = measure(width: candidate, body)
+    if height > initial-size.height {
+      low = candidate
+      extra-lines = (height - initial-size.height) / line-height
+    } else {
+      high = width
+      if measure(width: width - precision, body).height > initial-size.height {
+        break
+      }
+      high -= precision.to-absolute()
+    }
+    if high - low < precision.to-absolute() {
+      break
+    }
+  }
+
+  // set linebreak(justify: true) if par.justify and is-figure
+
+  block(width: high, body)
+})
+
+
 #let okabe = lq.color.map.okabe-ito
 
 #set outline.entry(fill: repeat(gap: .5em)[#sym.dot.c])
@@ -51,6 +109,7 @@
 #set page(paper: "a4", margin: auto, numbering: "1/1")
 
 #show figure.caption: emph
+#show figure.caption: balance.with(is-figure: true)
 // Floating figures appear as `place` instead of `block` so we
 // need this workaround, see https://github.com/typst/typst/issues/6095
 // #show figure.caption: balance.with(is-figure: true)
@@ -179,9 +238,9 @@
 }
 
 
-= Laboratories Report
+= Laboratories Summary
 
-In this first section I will summarize the work done for each of the laboratories assigned during the course.
+In this section, I will summarize the work done for each of the laboratories assigned during the course.
 
 == The Joke
 
@@ -193,7 +252,7 @@ Not much to say about that one.
 
 - https://github.com/eduardz1/CI2025_lab1
 
-The second lab required us to implement a solution for an N-dimensional knapsack problem. To solve it, I decided to use a _Simulated Annealing_ approach. This approach, inspired by physics, works by integrating a certain degree of randomness into the optimization process, which gradually decreases over time, much like particle movement in a metal that is cooling down.
+The second lab required us to implement a solution for an N-dimensional knapsack problem. To solve it, I decided to use a _Simulated Annealing_ approach. This approach, inspired by physics, works by integrating randomness into the optimization process, which gradually decreases over time, much like the movement of particles in cooling metal.
 
 === The Algorithm
 
@@ -240,7 +299,7 @@ The algorithm provides a relatively good solution. It can be summarized with the
 
 === Comments
 
-In the review I was asked to integrate a way to visualize the convergence of the algorithm over time. This can be useful to understand if the hyperparameters chosen are appropriate for the problem at hand.
+In the review, I was asked to add a visualization of the algorithm's convergence over time. This helps determine whether the chosen hyperparameters are appropriate for the problem.
 
 == Traveling Salesperson Problem
 
@@ -250,190 +309,194 @@ The third lab required us to implement the solution for the Traveling Salesperso
 
 === The Algorithm
 
-To solve it, I decided to use a Genetic Algorithm (GA) approach. I created the graph using the `NetworkX` library, explicitly specifying whether to make the graph directed or undirected and whether to add self-loops or not. The graph generated can also be labeled with the city names like in the example provided in the lab. The `Python` code looks as follows:
+To solve it, I used a Genetic Algorithm (GA) approach. I created the graph using the `NetworkX` library, explicitly specifying whether the graph should be directed or undirected and whether to include self-loops. The generated graph can also be labeled with city names, as shown in the lab example. The `Python` code is the one shown in @tsp-graph-gen.
 
-```python
-def generate_graph(
-    data: npt.NDArray,
-    directed: bool = False,
-    loop: bool = False,
-    labels: list[str] | None = None,
-) -> nx.Graph | nx.DiGraph:
-    """Generate a NetworkX graph from a 2D numpy array.
+#figure(
+  ```python
+  def generate_graph(
+      data: npt.NDArray,
+      directed: bool = False,
+      loop: bool = False,
+      labels: list[str] | None = None,
+  ) -> nx.Graph | nx.DiGraph:
+      """Generate a NetworkX graph from a 2D numpy array.
 
-    Args:
-        data (npt.NDArray): A 2D numpy array representing the adjacency matrix.
-        directed (bool): Whether to create a directed graph. Default is False.
-        loop (bool): Whether to include self-loops. Default is False.
-        labels (list[str] | None): Optional list of labels for the nodes.
+      Args:
+          data (npt.NDArray): A 2D numpy array representing the adjacency matrix.
+          directed (bool): Whether to create a directed graph. Default is False.
+          loop (bool): Whether to include self-loops. Default is False.
+          labels (list[str] | None): Optional list of labels for the nodes.
 
-    Returns:
-        nx.Graph | nx.DiGraph: The generated NetworkX graph.
-    """
+      Returns:
+          nx.Graph | nx.DiGraph: The generated NetworkX graph.
+      """
+      assert data.ndim == 2, "Input data must be a 2D array."
+      assert data.shape[0] == data.shape[1], "Input data must be a square matrix."
 
-    assert data.ndim == 2, "Input data must be a 2D array."
-    assert data.shape[0] == data.shape[1], "Input data must be a square matrix."
+      graph = nx.DiGraph() if directed else nx.Graph()
+      n = data.shape[0]
+      for i, j in combinations(range(n), 2):
+          graph.add_edge(i, j, weight=data[i, j])
 
-    graph = nx.DiGraph() if directed else nx.Graph()
+          if directed:
+              graph.add_edge(j, i, weight=data[j, i])
+          if loop:
+              # add edges to self to handle cases where the weight is not zero
+              graph.add_edge(i, i, weight=data[i, i])
+              graph.add_edge(j, j, weight=data[j, j])
 
-    n = data.shape[0]
-    for i, j in combinations(range(n), 2):
-        graph.add_edge(i, j, weight=data[i, j])
+      if labels:
+          mapping = {i: labels[i] for i in range(len(labels))}
+          graph = nx.relabel_nodes(graph, mapping)
 
-        if directed:
-            graph.add_edge(j, i, weight=data[j, i])
+      return graph
+  ```,
+  caption: [Function to generate a `NetworkX` graph from a 2D numpy array representing the adjacency matrix.],
+) <tsp-graph-gen>
 
-        if loop:
-            # add edges to self to handle cases where the weight is not zero
-            graph.add_edge(i, i, weight=data[i, i])
-            graph.add_edge(j, j, weight=data[j, j])
 
-    if labels:
-        mapping = {i: labels[i] for i in range(len(labels))}
-        graph = nx.relabel_nodes(graph, mapping)
-
-    return graph
-```
-
-By using `NetworkX`, the fitness of a TSP solution can be computed in a straightforward way using `nx.path_weight`. For the GA I used swaps as the mutation operator, tournament selection as the parent selection operator and a combination of Partially Mapped Crossover (PMX) and Inver-over Crossover (IOX) as the crossover operators.
+Using `NetworkX`, the fitness of a TSP solution can be computed straightforwardly with `nx.path_weight`. For the GA, I used swaps as the mutation operator, tournament selection for parent selection, and a combination of Partially Mapped Crossover (PMX) and Inver-over Crossover (IOX) as crossover operators.
 
 #info(accent-color: okabe.at(0))[
-  / Swap Mutation: swaps two random cities in the tour.
+  / Swap Mutation: Swaps two random cities in the tour.
 
-  / Tournament Selection: selects the best individual (2 in the case of parent selection) from a random subset of the population.
-  / Partially Mapped Crossover: designed as a recombination operator for TSP-like problems, it preserves relative order and position of cities from the parents.
-  / Inver-over Crossover: specifically designed for TSP problems, presented by #cite(<inver-over>, form: "prose"), it works by inverting segments of the tour based on information from both parents. In the work they present, it outperforms all previous traditional crossover operators for TSP and it's the one that was suggested in class. #cite(<inver-over-aco-ga>, form: "prose") also obtain good results by combining the GA with an Ant Colony Optimization (ACO) approach.
+  / Tournament Selection: Selects the best individual (2 for parent selection) from a random subset of the population.
+  / Partially Mapped Crossover: Designed as a recombination operator for TSP-like problems, it preserves the relative order and position of cities from the parents.
+  / Inver-over Crossover: Specifically designed for TSP problems, presented by #cite(<inver-over>, form: "prose"), it works by inverting tour segments based on information from both parents. The authors demonstrate that it outperforms all previous traditional crossover operators for TSP, and it is the method suggested in class. #cite(<inver-over-aco-ga>, form: "prose") also achieves good results by combining GA with Ant Colony Optimization (ACO).
 ]
 
 === Comments <tsp-comments>
 
-A common criticism of my implementation was the usage of the swap operator instead of an inversion operator for mutation. My reasoning was that the IOX crossover already introduces inversions in the offspring, but nevertheless I will explore the usage of an inversion mutation operator in the project work. Another criticism was the usage of PMX instead of Order Crossover (OX). Personally I don't see how OX would provide a significant advantage over PMX in preserving adjaciencies between cities, but I will also explore this in the project work. Tournament size and elitism rate were also deemed too high, so I will experiment with lower values for both of them.
+A common criticism was my use of the swap operator instead of an inversion operator for mutation. My reasoning was that IOX crossover already introduces inversions in offspring; however, I explore inversion mutation in the project work. Another criticism was my use of PMX instead of Order Crossover (OX). I don't see how OX would provide a significant advantage over PMX in preserving adjacencies between cities, but I explore this in the project work. Tournament size and elitism rate were also considered too high, so I experiment with lower values for both.
 
 == Shortest Path
 
 - https://github.com/eduardz1/CI2025_lab3
 
-The goal of this lab was to implement a shortest path algorithm that could handle negative weights and handle negative cycles.
+The goal of this lab was to implement a shortest path algorithm that could handle negative weights and detect negative cycles.
 
 === The Algorithm
 
-To solve it, I implemented an A\* algorithm that uses the Bellman-Ford algorithm as the heuristic to guide the search. The Bellman-Ford algorithm is able to handle negative weights and detect negative cycles, making it a suitable choice for this problem. The `Python` code for it is relatively straightforward:
+To solve it, I implemented an A\* algorithm that uses the Bellman-Ford algorithm as a heuristic to guide the search. The Bellman-Ford algorithm can handle negative weights and detect negative cycles, making it suitable for this problem. The `Python` code is relatively straightforward and is shown in @astar-code.
 
-```python
-@dataclass
-class Node:
-    """
-    Represents a node in the A* search algorithm.
+#figure(
+  ```python
+  @dataclass
+  class Node:
+      """
+      Represents a node in the A* search algorithm.
 
-    Attributes:
-        id (int): The identifier of the node.
-        g (float): The cost from the start node to this node.
-        h (float): The heuristic estimate from this node to the target node.
-        parent (Optional[Node]): The parent node in the path.
-    """
+      Attributes:
+          id (int): The identifier of the node.
+          g (float): The cost from the start node to this node.
+          h (float): The heuristic estimate from this node to the target node.
+          parent (Optional[Node]): The parent node in the path.
+      """
 
-    id: int
-    g: float
-    h: float
-    parent: Optional["Node"] = None
+      id: int
+      g: float
+      h: float
+      parent: Optional["Node"] = None
 
-    def __post_init__(self):
-        self._f = self.g + self.h
+      def __post_init__(self):
+          self._f = self.g + self.h
 
-    def __lt__(self, other: "Node"):
-        return self._f < other._f
-
-
-def heuristic(G: nx.DiGraph, node: int, target: int) -> float:
-    """
-    Computes an heuristic for the A* algorithm.
-
-    Uses networkx's implementation of the Bellman-Ford algorithm to compute the
-    shortest-path distances to the target node from all other nodes by
-    running the algorithm on a reverse view of the graph. This heuristic should
-    handle negative edge weights and detect negative cycles. When a negative
-    cycle is detected, the returned heuristic is zero, which is admissible.
-
-    Args:
-        G (nx.DiGraph): the graph. The object should be assumed mutable. A cache
-            of the Bellman-Ford results is stored in
-            `G.graph["_bf_to_target_cache"]` for each target node to avoid
-            recomputing the same distances multiple times.
-        node (int): the starting node
-        target (int): the target node
-
-    Returns:
-        float: the heuristic estimate of the distance from `node` to `target`
-    """
-
-    cache = G.graph.setdefault("_bf_to_target_cache", {})
-    if target not in cache:
-        try:
-            dist = nx.single_source_bellman_ford_path_length(
-                G.reverse(copy=False), target
-            )
-        except nx.NetworkXUnbounded:
-            cache[target] = {}
-        else:
-            cache[target] = dist
-
-    return float(cache[target].get(node, 0.0))
+      def __lt__(self, other: "Node"):
+          return self._f < other._f
 
 
-def astar(
-    G: nx.DiGraph, source: int, target: int
-) -> tuple[Optional[List[int]], float] | None:
-    """
-    Implements the A* search algorithm.
+  def heuristic(G: nx.DiGraph, node: int, target: int) -> float:
+      """
+      Computes an heuristic for the A* algorithm.
 
-    Args:
-        G (nx.DiGraph): The directed graph on which to perform the search.
-        source (int): The starting node identifier.
-        target (int): The target node identifier.
+      Uses networkx's implementation of the Bellman-Ford algorithm to compute the
+      shortest-path distances to the target node from all other nodes by
+      running the algorithm on a reverse view of the graph. This heuristic should
+      handle negative edge weights and detect negative cycles. When a negative
+      cycle is detected, the returned heuristic is zero, which is admissible.
 
-    Returns:
-        (tuple[Optional[List[int]], float] | None): A tuple containing the list
-            of node identifiers representing the shortest path from source to
-            target and the total cost of that path. If no path exists, returns
-            None.
-    """
+      Args:
+          G (nx.DiGraph): the graph. The object should be assumed mutable. A cache
+              of the Bellman-Ford results is stored in
+              `G.graph["_bf_to_target_cache"]` for each target node to avoid
+              recomputing the same distances multiple times.
+          node (int): the starting node
+          target (int): the target node
 
-    start = Node(id=source, g=0, h=0)
-    open_set = []
-    closed_set = set()
-    heapq.heappush(open_set, start)
+      Returns:
+          float: the heuristic estimate of the distance from `node` to `target`
+      """
 
-    while open_set:
-        current = heapq.heappop(open_set)
+      cache = G.graph.setdefault("_bf_to_target_cache", {})
+      if target not in cache:
+          try:
+              dist = nx.single_source_bellman_ford_path_length(
+                  G.reverse(copy=False), target
+              )
+          except nx.NetworkXUnbounded:
+              cache[target] = {}
+          else:
+              cache[target] = dist
 
-        if current.id == target:
-            path = []
-            cost = current.g
-            while current:
-                path.append(current.id)
-                current = current.parent
-            return path[::-1], cost
+      return float(cache[target].get(node, 0.0))
 
-        closed_set.add(current.id)
 
-        for neighbor in G.neighbors(current.id):
-            if neighbor in closed_set:
-                continue
+  def astar(
+      G: nx.DiGraph, source: int, target: int
+  ) -> tuple[Optional[List[int]], float] | None:
+      """
+      Implements the A* search algorithm.
 
-            g = current.g + G[current.id][neighbor]["weight"]
-            h = heuristic(G, neighbor, target)
+      Args:
+          G (nx.DiGraph): The directed graph on which to perform the search.
+          source (int): The starting node identifier.
+          target (int): The target node identifier.
 
-            neighbor_node = Node(id=neighbor, g=g, h=h, parent=current)
+      Returns:
+          (tuple[Optional[List[int]], float] | None): A tuple containing the list
+              of node identifiers representing the shortest path from source to
+              target and the total cost of that path. If no path exists, returns
+              None.
+      """
 
-            if any(node.id == neighbor and node.g <= g for node in open_set):
-                continue
+      start = Node(id=source, g=0, h=0)
+      open_set = []
+      closed_set = set()
+      heapq.heappush(open_set, start)
 
-            heapq.heappush(open_set, neighbor_node)
-```
+      while open_set:
+          current = heapq.heappop(open_set)
+
+          if current.id == target:
+              path = []
+              cost = current.g
+              while current:
+                  path.append(current.id)
+                  current = current.parent
+              return path[::-1], cost
+
+          closed_set.add(current.id)
+
+          for neighbor in G.neighbors(current.id):
+              if neighbor in closed_set:
+                  continue
+
+              g = current.g + G[current.id][neighbor]["weight"]
+              h = heuristic(G, neighbor, target)
+
+              neighbor_node = Node(id=neighbor, g=g, h=h, parent=current)
+
+              if any(node.id == neighbor and node.g <= g for node in open_set):
+                  continue
+
+              heapq.heappush(open_set, neighbor_node)
+  ```,
+  caption: [Implementation of the A\* algorithm using Bellman-Ford as a heuristic.],
+) <astar-code>
 
 === Comments
 
-I received a comment about improving the efficiency of the A\* implementation by reducing `heapq` operations. I also seem to have missed the requirement of finding a strictly positive path as solution.
+I received feedback about improving the efficiency of the A\* implementation by reducing `heapq` operations. I also missed the requirement of finding a strictly positive path as a solution.
 
 = Project Work
 
@@ -441,7 +504,7 @@ In this section we will explore the work done for the project assignment.
 
 == Problem Definition
 
-The problem consists in finding the optimal path for a goblin to steal all the gold from a set of nodes and bring it back its hut. The goblin can carry any amount of gold and can take any amount of it from each node but it cannot leave any gold behind. The cost function to travel between each node is given by
+The problem consists of finding the optimal path for a goblin to steal all the gold from a set of nodes and bring it back to its hut. The goblin can carry any amount of gold and take any amount from each node but cannot leave any gold behind. The cost function to travel between nodes is given by
 
 $
   C = D + (D alpha W)^beta | alpha >= 0 and beta >= 0.
@@ -449,7 +512,7 @@ $ <cost>
 
 == Performance Considerations
 
-To improve the performance of the algorithm, I used the `Numba` library to Just-In-Time compile most of the performance-critical code using `LLVM`. For `Networkx` operations, I added support for the `cugraph` backend, providing GPU acceleration when a CUDA-capable GPU is available. I also added support for `Intel`-specific libraries for better `Numba` compilation. You can enable one or both with the following `uv` command:
+To improve performance, I used the `Numba` library to Just-In-Time compile performance-critical code using `LLVM`. For `NetworkX` operations, I added support for the `cugraph` backend to provide GPU acceleration when a CUDA-capable GPU is available. I also added support for Intel-specific libraries for better `Numba` compilation. You can enable one or both with the following `uv` command:
 
 
 ```bash
@@ -462,15 +525,15 @@ In this section we will explore the different intuitions and the approaches that
 
 === First Intuitions
 
-My first intuition when approaching this problem was to consider similar problems, in doing so I identified this problem as a special case of the vehicle routing problem with capacity constraints (CVRP).
+My first intuition when approaching this problem was to consider similar problems. By doing so, I identified it as a special case of the vehicle routing problem with capacity constraints (CVRP).
 
 ==== Prin's Algorithm and Giant Tours <prin-sec>
 
-A common approach to solve this kind of problem is to generate a "giant tour", which consists in taking a permutation of all the nodes in the graph, and then split it into smaller routes. To compute the split, Prin's algorithm is a good choice as is detailed in #cite(<prin>, form: "prose"). The nice thing about this algorithm is that the split computed is optimal for the given permutation. The algorithm has complexity $cal(O)(N^2)$ but can be simplified to $cal(O)(N)$ with the approach in #cite(<split>, form: "prose"). This approach, unfortunately, is not applicable to our non-linear cost function.
+A common approach to solving this type of problem is to generate a "giant tour", which consists of a permutation of all nodes in the graph, and then split it into smaller routes. To compute the split, Prin's algorithm is a good choice, as detailed in #cite(<prin>, form: "prose"). The advantage of this algorithm is that the split computed is optimal for the given permutation. The algorithm has complexity $cal(O)(N^2)$ but can be simplified to $cal(O)(N)$ with the approach in #cite(<split>, form: "prose"). Unfortunately, this approach is not applicable to our non-linear cost function.
 
 ==== Fractional Nodes <frac-nodes>
 
-Part of the problem specification is the ability to take any amount of gold from each node. To convert this continuous optimization problem into a discrete one, we can split each node into multiple "fractional nodes", each containing a fraction of the gold from the original node. To avoid having the path finding always end up traversing all the fractions of a node, we also have to make all the fractions fully connected with edges of zero distance. We can also add a fraction of zero gold to each node to allow the solver to skip nodes entirely if needed. This approach allows us to completely transparently optimize the giant tour approach without any knowledge of the internal working of our TSP solver.
+Part of the problem specification is the ability to take any amount of gold from each node. To convert this continuous optimization problem into a discrete one, we can split each node into multiple "fractional nodes", each containing a fraction of the original node's gold. To prevent pathfinding from always traversing all fractions of a node, we make all fractions fully connected with zero-distance edges. We can also add a zero-gold fraction to each node to allow the solver to skip nodes entirely if needed. This approach allows us to optimize the giant tour transparently without any knowledge of the internal workings of our TSP solver.
 
 #warning(
   accent-color: okabe.at(1),
@@ -489,18 +552,18 @@ $
 
 We can notice that, for $beta < 1$, the cost of the load is "discounted", with $(W_1 + W_2)^beta < W_1^beta + W_2^beta$. This means that combining multiple loads can lead to a lower overall cost.
 
-For $beta >= 1$, we can imagine having two separate scenarios:
+For $beta >= 1$, consider two scenarios:
 
 1. Taking multiple single trips from base to node $i$ and back, each of them carrying an optimal load that we define as $L^*$.
 2. Chaining together multiple cities where we carry an optimal load $L^*$ for each city.
 
-Computing this optimal load $L^*$ allows us to mathematically decide on the fraction factor that we mentioned in @frac-nodes. The split algorithm that we mentioned in @prin-sec will then be able to optimally decide how to group these fractions together. To do so, we focus on minimizing the cost per unit of gold carried, which is a function $U(W)$ defined as
+Computing this optimal load $L^*$ allows us to mathematically determine the fraction factor mentioned in @frac-nodes. The split algorithm mentioned in @prin-sec can then optimally decide how to group these fractions together. To do so, we focus on minimizing the cost per unit of gold carried, which is a function $U(W)$ defined as
 
 $
   U(W) = T(W) / W = (2D + (D alpha W)^beta) / W = (2D)/W + (D alpha)^beta W^(beta-1).
 $
 
-If we assume $D > 0 and alpha >= 0 and W >= 0 and beta >= 1$, the limits for $W -> 0$ and $W -> +infinity$ are both $+infinity$. Therefore, finding the zeros of the derivative $U'(W)$ will give us the minimum cost per unit of gold carried, which will define our optimal load $L^*$.
+Assuming $D > 0$, $alpha >= 0$, $W >= 0$, and $beta >= 1$, the limits as $W -> 0$ and $W -> +infinity$ are both $+infinity$. Therefore, finding the zeros of the derivative $U'(W)$ gives us the minimum cost per unit of gold carried, which defines our optimal load $L^*$.
 
 $
   U'(W) = d / (d W) ( (2D)/W + (D alpha)^beta W^(beta-1) ) & = 0 \
@@ -510,15 +573,15 @@ $
   L^* & = 1 / alpha ((2 D^(1 - beta)) / (beta - 1))^(1 / beta).
 $
 
-The existence of this result has an important implication: for $beta > 1$ we can find an optimal packet size $L^*$, meaning that chaining two optimal packets is at best only equivalent to taking two separate trips with optimal packets. This means that we can completely exclude the "fractional nodes" approach detailed in @frac-nodes as the best strategy is to make single "greedy" trips with optimal packet size $L^*$ until we are left with a remainder smaller than $L^*$.
+This result has an important implication: for $beta > 1$, we can find an optimal packet size $L^*$, meaning that combining two optimal packets is at best equivalent to taking two separate trips with optimal packets. Therefore, we can completely exclude the "fractional nodes" approach detailed in @frac-nodes, as the best strategy is to make single "greedy" trips with optimal packet size $L^*$ until a remainder smaller than $L^*$ remains.
 
-Empirically we see that for $beta = 2$, the optimal load is $approx 1$ for every node on our graph defined on a unit square with $alpha = 1$. Given that the amount of gold on each node is sampled from $[1, 1000)$, this means that the optimal strategy in this case consists in thousands of small trips.
+Empirically, for $beta = 2$, the optimal load is $approx 1$ for every node on our graph defined on a unit square with $alpha = 1$. Given that the amount of gold on each node is sampled from $[1, 1000)$, the optimal strategy in this case consists of thousands of small trips.
 
 === Constraining Prin's Algorithm <constrain-prin>
 
-As we have established in @prin-sec, due to our cost function being non-linear, we cannot directly apply @split to our problem. However, given that we have a lot of information about the problem characteristics, we can try to constrain the problem to $cal(O)(N k)$, with $k$ being a problem-dependent constant.
+As established in @prin-sec, because our cost function is non-linear, we cannot directly apply @split to our problem. However, given substantial information about the problem characteristics, we can constrain the problem to $cal(O)(N k)$, where $k$ is a problem-dependent constant.
 
-We can solve this by saying that we want to find the threshold where the cost associated with carrying an additional load becomes higher than the cost of making an additional trip. We can formalize this as such:
+We can solve this by finding the threshold where the cost of carrying an additional load exceeds the cost of making an additional trip. We formalize this as:
 
 $
   delta + (delta alpha W)^beta > 2 D + (D alpha g)^beta,
@@ -532,22 +595,22 @@ $
   W > (2 D - delta + (D alpha g)^beta)^(1 / beta) / (delta alpha).
 $
 
-More concretely, this means that we can use the average distance from node zero as our $D$, the average distance between nodes as our $delta$, and the average gold per node as our $g$. The threshold then becomes the $W$ limit divided by the average gold per node. To give a bit more "leeway" to our solver, we take the bottom 25th percentile as the average amount of gold per node and we cap the threshold to a minimum of 5 nodes.
+More specifically, we use the average distance from node zero as $D$, the average distance between nodes as $delta$, and the average gold per node as $g$. The threshold then becomes the $W$ limit divided by the average gold per node. To give some "leeway" to our solver, we use the bottom 25th percentile as the average gold per node and cap the threshold to a minimum of 5 nodes.
 
-In practice, we notice that this limit works quite well. While there are cases where our optimal split algorithm would have preferred to continue adding nodes, the final cost difference is minimal, proving that the improvement gained by these potential longer routes is negligible.
+In practice, this limit works well. While there are cases where our optimal split algorithm would prefer to add more nodes, the final cost difference is minimal, proving that any improvement from these longer routes is negligible.
 
 === Large Neighborhood Search
 
-A very common approach to solve VRP problems is the usage of Large Neighborhood Search (LNS) or its variants. Inspired by the work in #cite(<lns>, form: "prose"), and its application to Genetic Algorithms in #cite(<ga_lns>, form: "prose"), I implemented a basic LNS algorithm that is used to further optimize the path of the children of each generation in my Genetic Algorithm implementation.
+A common approach to solving VRP problems is Large Neighborhood Search (LNS) or its variants. Inspired by the work in #cite(<lns>, form: "prose") and its application to Genetic Algorithms in #cite(<ga_lns>, form: "prose"), I implemented a basic LNS algorithm to further optimize the paths of offspring in each generation of my Genetic Algorithm.
 
-The algorithm works in the following way:
+The algorithm works as follows:
 
-1. A subset of nodes is randomly selected and removed from a tour derived from the optimal split algorithm. This phase is known as _destroy_.
-2. The removed nodes are reinserted into the tour in the position that yields the lowest increase in the solution cost. This phase is known as _repair_.
+1. A subset of nodes is randomly selected and removed from a tour derived from the optimal split algorithm. This phase is called _destroy_.
+2. The removed nodes are reinserted into the tour at the position that yields the lowest increase in solution cost. This phase is called _repair_.
 
 === Genetic Algorithm
 
-To solve the overall problem, I chose to implement a Genetic Algorithm (GA). The solution can be summarized with the following pseudocode:
+To solve the overall problem, I implemented a Genetic Algorithm (GA). The solution is summarized in the following pseudocode:
 
 
 #algorithm-figure(
@@ -606,22 +669,19 @@ To solve the overall problem, I chose to implement a Genetic Algorithm (GA). The
 
 ==== Optimizing the Hyperparameters <hyperparam>
 
-Our Genetic Algorithm has quite a few hyperparameters that need to be tuned to obtain good results. To do so, I found a very interesting library called `Optuna`, by #cite(<optuna>, form: "prose"). This library manages automatically the search space for the hyperparameters to reduce the number of simulations and smartly prune out dead ends. I run 5000 simulations with a combination of problems that I found to be representative for our use case that we see in @hyperparam-problems.
+Our Genetic Algorithm has several hyperparameters that need tuning to obtain good results. To do so, I found an interesting library called `Optuna`, by #cite(<optuna>, form: "prose"). This library automatically manages the search space for hyperparameters to reduce the number of simulations and intelligently prunes dead ends. I ran 5000 simulations with a combination of problems representative of our use case, shown in @hyperparam-problems.
 
 #figure(
   ```python
   # A sufficiently challenging city set without being too large.
   city_sizes = [100]
-
-  # We test both very low alpha which would allow us to take longer routes and
-  # high alpha which would force us to take shorter routes.
+  # We test both very low and high alpha values: low alpha allows longer routes,
+  # while high alpha forces shorter routes.
   alphas = [0.05, 10.0]
-
-  # Both low and high density graphs, should generalize well.
+  # Both low and high density graphs should generalize well.
   densities = [0.2, 0.9]
-
-  # We only optimize beta <= 1.0. For beta > 1.0 most of the gains come from
-  # removing the bulk gold.
+  # We only optimize beta <= 1.0. For beta > 1.0, most gains come from
+  # removing bulk gold.
   betas = [0.05, 0.5, 1.0]
 
   problems = [
@@ -635,16 +695,14 @@ Our Genetic Algorithm has quite a few hyperparameters that need to be tuned to o
   caption: [Set of problems used for hyperparameter optimization.],
 ) <hyperparam-problems>
 
-Instead of introducing an early stopping criteria in the GA, we optimize for both the average percent improvement over all the problems compared to the greedy baseline, and the total program runtime. By doing so we avoid having the optimizer favoring ever larger populations and number of generations. The Pareto front obtained is shown in @pareto-front.
+Instead of introducing early stopping criteria in the GA, we optimize for both the average percent improvement over all problems compared to the greedy baseline and the total program runtime. This prevents the optimizer from favoring ever-larger populations and generations. The resulting Pareto front is shown in @pareto-front.
 
 #figure(
   image("imgs/pareto.png"),
   caption: [Pareto front for the hyperparameter optimization. On the X axis we have the negative of the average percent improvement over the baseline. On the Y axis we have the total runtime in seconds.],
 ) <pareto-front>
 
-// The combination chosen on the Pareto front, with an average improvement of 27% over the baseline and a cumulative runtime of 1.85 seconds, is the following:
-
-We choose three preset on the Pareto front with an average improvement ranging from 26 to 28 percent over the baseline. We call these presets `fast`, `balanced` and `quality`, with them taking, respectively, $approx 0.3s$, $approx 1.9s$ and $approx 6.7s$ to solve all the benchmark problems. The values of the hyperparameters are the ones shown in @presets.
+We choose three presets on the Pareto front with average improvements ranging from 26 to 28 percent over the baseline. We call these presets `fast`, `balanced`, and `quality`. They take approximately $0.3s$, $1.9s$, and $6.7s$, respectively, to solve all benchmark problems. The hyperparameter values are shown in @presets.
 
 #figure(
   ```json
@@ -689,18 +747,21 @@ We choose three preset on the Pareto front with an average improvement ranging f
   ],
 ) <presets>
 
-Even if the problem is not exactly the same, we can now address some of the comments in @tsp-comments. Focusing on the `balanced` preset, keeping the number of elites low seems to provide a good balance between exploration and exploitation. Mutation rate should also be kept low but using inversion instead of swaps doesn't provide any advantage and if we look at the Pareto front we can see either one with around the same frequency. Between PMX, IOX and OX, IOX dominates the Pareto front (and could also contribute to the reason why inversions don't help much). Tournament size has been chosen to be relatively high and consistent for all the presets. LNS is heavily prioritized in the higher quality presets but it's also very costly, so for the `fast` preset it's almost completely ignored.
+Although the problem is not exactly the same, we can now address some comments from @tsp-comments. Focusing on the `balanced` preset, keeping the number of elites low provides a good balance between exploration and exploitation. The mutation rate should also be kept low; using inversion instead of swaps provides no advantage, and both appear with similar frequency on the Pareto front. Among PMX, IOX, and OX, IOX dominates the Pareto front (which may also explain why inversions provide limited benefit). Tournament size is relatively high and consistent across all presets. LNS is heavily prioritized in higher-quality presets but is also costly, so for the `fast` preset it is almost completely omitted.
 
 == Evaluating the Solution
 
-We can now finally evaluate the cost of the solution found by our algorithm compared to the greedy baseline. We run both algorithms on a set of 81 problems with a combination of city sizes $N in [100, 300, 1000]$, $alpha in [0.05, 1.0, 10.0]$, $beta in [0.2, 1.0, 3.0]$, and density $rho in [0.2, 0.5, 0.9]$. For $beta = 1$ we notice that the greedy approach is already close to optimal. We see some slight improvements where $alpha$ is also very low and some paths can benefit from multiple stops. For $beta = 0.2$ some significant improvements can be seen but those pale in comparison to the results for $beta = 3.0$, where the "remove bulk gold" optimization really shines. For example, for one of the problems with $beta = 3.0$, the optimal load was computed to be $approx 0.91$. This result means that for each node, the algorithm that "removes the bulk gold" is going to take a small trip to city $i$ carrying just $0.91$ of gold: $(0, 0) -> (i, 0.91) -> (0, 0.91) -> ...$
+We can now evaluate the cost of the solution found by our algorithm compared to the greedy baseline. We ran both algorithms on 81 problems with combinations of city sizes $N in [100, 300, 1000]$, $alpha in [0.05, 1.0, 10.0]$, $beta in [0.2, 1.0, 3.0]$, and density $rho in [0.2, 0.5, 0.9]$. For $beta = 1$, the greedy approach is already close to optimal. We see slight improvements when $alpha$ is very low and some paths benefit from multiple stops. For $beta = 0.2$, significant improvements are observed, but they pale compared to results for $beta = 3.0$, where the "remove bulk gold" optimization truly excels. For example, for one problem with $beta = 3.0$, the optimal load was computed as $approx 0.91$. This means that for each node, the "remove bulk gold" algorithm makes small trips to city $i$ carrying only $0.91$ units of gold: $(0, 0) -> (i, 0.91) -> (0, 0.91) -> ...$
 
-We also notice that the hyperparameters of our choice generalize well to larger problems, where we don't see a drop in performance compared to smaller ones.
+We also note that our chosen hyperparameters generalize well to larger problems, showing no performance drop compared to smaller ones.
 
 #info(
   accent-color: okabe.at(0),
 )[All the results presented here have been computed using the `balanced` preset.]
 
-#align(center, benchmark-table(json("benches/out.json")))
+#figure(
+  benchmark-table(json("benches/out.json")),
+  caption: [Benchmark results comparing the greedy baseline and our solution across various problem configurations. The improvement column indicates the percentage improvement of our solution over the baseline.],
+)
 
 #bibliography("works.yaml")
