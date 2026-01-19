@@ -1,7 +1,7 @@
 [project]
 name = "tgp"
 version = "0.1.0"
-description = "Add your description here"
+description = "A variation of Contrained Vehicle Routing Problem"
 readme = "README.md"
 authors = [{ name = "eduard", email = "occhipinti.eduard@icloud.com" }]
 requires-python = ">=3.12"
