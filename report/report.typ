@@ -6,38 +6,49 @@
 #import algorithmic: algorithm-figure, style-algorithm
 #import "lib.typ": *
 
+#let okabe = lq.color.map.okabe-ito
+
 #set outline.entry(fill: repeat(gap: .5em)[#sym.dot.c])
 #show outline.entry.where(level: 1): it => {
   if it.element.func() != heading {
     return it
   }
-  set block(above: 2em)
+  set block(above: 5em)
+  line(length: 100%, stroke: 1pt + okabe.at(2))
+  set text(weight: "bold", fill: okabe.at(2))
+  align(center, it.body())
+}
+#show outline.entry.where(level: 2): it => {
+  if it.element.func() != heading {
+    return it
+  }
+  set block(above: 1em)
   set text(weight: "bold")
   link(it.element.location(), it.indented(it.prefix(), {
     (it.body() + h(1fr) + it.page())
   }))
 }
 
-// Lato does not support small-caps
-#let fakesc(s, scaling: 0.8, expansion: 1.1) = {
-  show regex("\p{Ll}+"): it => {
-    context {
-      box(scale(x: expansion * 100%, reflow: true, text(
-        scaling * 1em,
-        upper(it),
-      )))
-    }
-  }
-  text(s)
-}
-// #let fakesc = smallcaps
+// // Lato does not support small-caps
+// #let fakesc(s, scaling: 0.8, expansion: 1.1) = {
+//   show regex("\p{Ll}+"): it => {
+//     context {
+//       box(scale(x: expansion * 100%, reflow: true, text(
+//         scaling * 1em,
+//         upper(it),
+//       )))
+//     }
+//   }
+//   text(s)
+// }
+#let fakesc = smallcaps
 #set document(title: "Traveling Goblin Problem", author: "Eduard Occhipinti")
 
-// #set text(font: "New Computer Modern", size: 11pt)
-#set text(font: "Lato", lang: "en", size: 10pt)
-#show math.equation: set text(font: "Lete Sans Math")
+#set text(font: "New Computer Modern", size: 10pt)
+// #set text(font: "Lato", lang: "en", size: 10pt)
+// #show math.equation: set text(font: "Lete Sans Math")
 
-#set page(paper: "a4", margin: 3.5cm, numbering: "1/1")
+#set page(paper: "a4", margin: auto, numbering: "1/1")
 
 #show figure.caption: emph
 // Floating figures appear as `place` instead of `block` so we
@@ -57,6 +68,7 @@
 
 #set par(justify: true, first-line-indent: 1.8em)
 
+#show figure: set block(breakable: true)
 #show figure.where(kind: table): set figure.caption(position: top)
 #show table.cell.where(y: 0): strong
 #show table.cell.where(y: 0): smallcaps
@@ -77,7 +89,6 @@
 #set heading(numbering: "1.1")
 #show heading: smallcaps
 #show heading: set block(above: 1.4em, below: 1em)
-#let okabe = lq.color.map.okabe-ito
 #show link: set text(okabe.at(0))
 #show cite: set text(okabe.at(3))
 #show ref: set text(okabe.at(5))
@@ -108,20 +119,65 @@
   block({
     if num != "0" and it.body != [Bibliography] {
       set text(fill: okabe.at(2).lighten(60%))
-      place(num, dx: -(measure(num).width + 0.3em))
+      // place(num, dx: -(measure(num).width + 0.3em))
+      num + h(0.3em)
     }
     set text(fill: okabe.at(2))
-    it.body
+    smallcaps(it.body)
   })
 }
 
+#show bibliography: set heading(outlined: false)
+
 #{
+  set align(center)
+  set page(footer: text(
+    fill: gray,
+  )[ Report for the Computational Intelligence Course Project \ #datetime.today().display()])
+
+  v(.4fr)
+
+
+  let width = 85%
+
+  line(length: width, stroke: 4pt + okabe.at(2))
+  block(
+    smallcaps(
+      text(
+        size: 2.5em,
+        fill: okabe.at(2),
+        weight: "bold",
+      )[Traveling Goblin Problem],
+    ),
+  )
+  line(length: width, stroke: okabe.at(2))
+  box(
+    width: width,
+    grid(
+      columns: 2,
+      column-gutter: 1fr,
+      [s332100\@studenti.polito.it], [Eduard Antonovic Occhipinti],
+    ),
+  )
+
+  v(.3fr)
+
   show link: set text(black)
   show ref: set text(black)
-  outline(title: "Table of Contents")
+  outline(title: none)
+
+  v(1fr)
 }
 
-#v(5em)
+
+#show heading.where(level: 1): it => {
+  pagebreak(weak: true)
+  set align(center)
+  v(4em)
+  it
+  v(1em)
+}
+
 
 = Laboratories Report
 
@@ -129,9 +185,13 @@ In this first section I will summarize the work done for each of the laboratorie
 
 == The Joke
 
+- https://github.com/eduardz1/CI2025_lab0
+
 Not much to say about that one.
 
 == Knapsack Problem
+
+- https://github.com/eduardz1/CI2025_lab1
 
 The second lab required us to implement a solution for an N-dimensional knapsack problem. To solve it, I decided to use a _Simulated Annealing_ approach. This approach, inspired by physics, works by integrating a certain degree of randomness into the optimization process, which gradually decreases over time, much like particle movement in a metal that is cooling down.
 
@@ -161,7 +221,7 @@ The algorithm provides a relatively good solution. It can be summarized with the
           If([#CallInline[#fakesc[IsFeasible]][new_sol]], {
             Assign[$Delta$][#CallInline[#fakesc[ComputeDelta]][sol, new_sol]]
             If(
-              [$Delta >= 0 or$ #CallInline[#fakesc[RandomFloat]][] < $e^(Delta / T)$],
+              [$Delta >= 0 or$ #CallInline[#fakesc[RandomFloat]][] < $e^(display(Delta) / display(T))$],
               {
                 Assign[sol][new_sol]
                 If([$"new_sol" > "best_sol"$], {
@@ -183,6 +243,8 @@ The algorithm provides a relatively good solution. It can be summarized with the
 In the review I was asked to integrate a way to visualize the convergence of the algorithm over time. This can be useful to understand if the hyperparameters chosen are appropriate for the problem at hand.
 
 == Traveling Salesperson Problem
+
+- https://github.com/eduardz1/CI2025_lab2
 
 The third lab required us to implement the solution for the Traveling Salesperson Problem (TSP) that generalizes also for graphs with negative weights, self loops and non-symmetric edges.
 
@@ -233,7 +295,7 @@ def generate_graph(
     return graph
 ```
 
-By using `NetworkX`, the fitness of a TSP solution can be computed with just `nx.path_weight`. For the GA I used swaps as the mutation operator, tournament selection as the parent selection operator and a combination of Partially Mapped Crossover (PMX) and Inver-over Crossover (IOX) as the crossover operators.
+By using `NetworkX`, the fitness of a TSP solution can be computed in a straightforward way using `nx.path_weight`. For the GA I used swaps as the mutation operator, tournament selection as the parent selection operator and a combination of Partially Mapped Crossover (PMX) and Inver-over Crossover (IOX) as the crossover operators.
 
 #info(accent-color: okabe.at(0))[
   / Swap Mutation: swaps two random cities in the tour.
@@ -248,6 +310,8 @@ By using `NetworkX`, the fitness of a TSP solution can be computed with just `nx
 A common criticism of my implementation was the usage of the swap operator instead of an inversion operator for mutation. My reasoning was that the IOX crossover already introduces inversions in the offspring, but nevertheless I will explore the usage of an inversion mutation operator in the project work. Another criticism was the usage of PMX instead of Order Crossover (OX). Personally I don't see how OX would provide a significant advantage over PMX in preserving adjaciencies between cities, but I will also explore this in the project work. Tournament size and elitism rate were also deemed too high, so I will experiment with lower values for both of them.
 
 == Shortest Path
+
+- https://github.com/eduardz1/CI2025_lab3
 
 The goal of this lab was to implement a shortest path algorithm that could handle negative weights and handle negative cycles.
 
@@ -377,7 +441,7 @@ In this section we will explore the work done for the project assignment.
 
 == Problem Definition
 
-The problem consists in finding the optimal path for a goblin to steal all the gold from a set of nodes and bring it back to base. The goblin can carry any amount of gold and can take any amount of it from each node but it cannot leave any gold behind. The cost function to travel between each node is given by
+The problem consists in finding the optimal path for a goblin to steal all the gold from a set of nodes and bring it back its hut. The goblin can carry any amount of gold and can take any amount of it from each node but it cannot leave any gold behind. The cost function to travel between each node is given by
 
 $
   C = D + (D alpha W)^beta | alpha >= 0 and beta >= 0.
@@ -416,7 +480,7 @@ Part of the problem specification is the ability to take any amount of gold from
 
 Starting from the assumption that we want to split each node into the minimum number of fractional nodes possible, we define the total cost $T$ as the sum of
 
-+ The cost of the outbound trip from $0$ to $i$, which we'll call $D$.
++ The cost of the outbound trip from $0$ to $i$, which corresponds to the distance $D$.
 + The return cost using @cost, which comes out to $D + (D alpha W)^beta$.
 
 $
@@ -542,33 +606,36 @@ To solve the overall problem, I chose to implement a Genetic Algorithm (GA). The
 
 ==== Optimizing the Hyperparameters <hyperparam>
 
-Our Genetic Algorithm has quite a few hyperparameters that need to be tuned to obtain good results. To do so, I found a very interesting library called `Optuna`, by #cite(<optuna>, form: "prose"). This library managed automatically the search space for the hyperparameters. I run 5000 simulations with a combination of problems that I found to be representative for our use case.
+Our Genetic Algorithm has quite a few hyperparameters that need to be tuned to obtain good results. To do so, I found a very interesting library called `Optuna`, by #cite(<optuna>, form: "prose"). This library manages automatically the search space for the hyperparameters to reduce the number of simulations and smartly prune out dead ends. I run 5000 simulations with a combination of problems that I found to be representative for our use case that we see in @hyperparam-problems.
 
-```python
-# A sufficiently challenging city set without being too large.
-city_sizes = [100]
+#figure(
+  ```python
+  # A sufficiently challenging city set without being too large.
+  city_sizes = [100]
 
-# We test both very low alpha which would allow us to take longer routes and
-# high alpha which would force us to take shorter routes.
-alphas = [0.05, 10.0]
+  # We test both very low alpha which would allow us to take longer routes and
+  # high alpha which would force us to take shorter routes.
+  alphas = [0.05, 10.0]
 
-# Both low and high density graphs, should generalize well.
-densities = [0.2, 0.9]
+  # Both low and high density graphs, should generalize well.
+  densities = [0.2, 0.9]
 
-# We only optimize beta <= 1.0. For beta > 1.0 most of the gains come from
-# removing the bulk gold.
-betas = [0.05, 0.5, 1.0]
+  # We only optimize beta <= 1.0. For beta > 1.0 most of the gains come from
+  # removing the bulk gold.
+  betas = [0.05, 0.5, 1.0]
 
-problems = [
-    Problem(num_cities=n, alpha=a, beta=b, density=d)
-    for n in city_sizes
-    for a in alphas
-    for b in betas
-    for d in densities
-]
-```
+  problems = [
+      Problem(num_cities=n, alpha=a, beta=b, density=d)
+      for n in city_sizes
+      for a in alphas
+      for b in betas
+      for d in densities
+  ]
+  ```,
+  caption: [Set of problems used for hyperparameter optimization.],
+) <hyperparam-problems>
 
-Instead of introducing an early stopping criteria in the GA, we optimize for both the average percent improvement overall these problems compared to the greedy baseline, and the total program runtime. By doing so we avoid having the optimizer favoring ever larger populations and number of generations. The Pareto front obtained is shown in @pareto-front.
+Instead of introducing an early stopping criteria in the GA, we optimize for both the average percent improvement over all the problems compared to the greedy baseline, and the total program runtime. By doing so we avoid having the optimizer favoring ever larger populations and number of generations. The Pareto front obtained is shown in @pareto-front.
 
 #figure(
   image("imgs/pareto.png"),
@@ -577,9 +644,9 @@ Instead of introducing an early stopping criteria in the GA, we optimize for bot
 
 // The combination chosen on the Pareto front, with an average improvement of 27% over the baseline and a cumulative runtime of 1.85 seconds, is the following:
 
-We choose three preset on the Pareto front with an average improvement ranging from 26 to 28 percent over the baseline. We call these presets `fast`, `balanced` and `quality`, with them taking, respectively, $approx 0.3s$, $approx 1.9s$ and $approx 6.7s$. The values of the hyperparameters are the following:
+We choose three preset on the Pareto front with an average improvement ranging from 26 to 28 percent over the baseline. We call these presets `fast`, `balanced` and `quality`, with them taking, respectively, $approx 0.3s$, $approx 1.9s$ and $approx 6.7s$ to solve all the benchmark problems. The values of the hyperparameters are the ones shown in @presets.
 
-#block(breakable: false)[
+#figure(
   ```json
   {
     "fast": {
@@ -616,10 +683,11 @@ We choose three preset on the Pareto front with an average improvement ranging f
       "mutation": "inversion",
     },
   }
-  ```
-]
-
-Here the `_percent` suffix indicates that the value is a percentage of the total number of cities.
+  ```,
+  caption: [
+    Hyperparameters of the three presets offered by default by the program. The `_percent` suffix indicates that the value is a percentage of the total number of cities.
+  ],
+) <presets>
 
 Even if the problem is not exactly the same, we can now address some of the comments in @tsp-comments. Focusing on the `balanced` preset, keeping the number of elites low seems to provide a good balance between exploration and exploitation. Mutation rate should also be kept low but using inversion instead of swaps doesn't provide any advantage and if we look at the Pareto front we can see either one with around the same frequency. Between PMX, IOX and OX, IOX dominates the Pareto front (and could also contribute to the reason why inversions don't help much). Tournament size has been chosen to be relatively high and consistent for all the presets. LNS is heavily prioritized in the higher quality presets but it's also very costly, so for the `fast` preset it's almost completely ignored.
 
