@@ -36,12 +36,35 @@ To run the tests, use:
 uv run pytest
 ```
 
-## Linting
+## Development Environment
+
+To set up the development environment, use:
+
+```bash
+uv sync --group dev  # add '--extra gpu' or '--extra intel' if needed
+```
+
+### Linting
 
 Linting is done with `ruff` and `ty`. To lint the code, use:
 
 ```bash
-uv sync --group dev  # add '--extra gpu' or '--extra intel' if needed
 uv run ruff check --fix
 uv run ty check
 ```
+
+### Hyperparameter Optimization
+
+The `scripts/optuna_ga.py` script optimizes the Genetic Algorithm's hyperparameters using Optuna. It runs multiple trials and finds the Pareto front of solutions balancing solution quality and runtime. To run the optimization, use:
+
+```bash
+uv run scripts/optuna_ga.py --n-trials 100
+```
+
+You can also visualize the optimization results with the Optuna dashboard:
+
+```bash
+optuna-dashboard sqlite:///optuna_ga_tuning.db
+```
+
+This will start a web interface where you can explore the trial history, parameter importance, and optimization progress. Use `uv run scripts/optuna_ga.py --help` for additional options like changing the number of parallel jobs or study name.
