@@ -6,7 +6,7 @@ To run the project, use `uv`:
 uv run tgp
 ```
 
-Due to Numba's JIT compilation, the first run will be slower, and compilation results are not cached. For better performance, run multiple simulations at once rather than running the program multiple times. To see all available options, run:
+Due to Numba's JIT compilation, the first run will be slower. Compilation results are not cached. For better performance, run multiple simulations at once rather than running the program multiple times. To see all available options, run:
 
 ```bash
 uv run tgp --help
