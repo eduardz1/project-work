@@ -11,7 +11,7 @@ from tgp.solution.ga.common import cost, get_routes, optimal_fraction_size
 from tgp.solution.ga.crossovers import iox
 from tgp.solution.ga.individual import Individual, create_individual_list
 from tgp.solution.ga.lns import lns
-from tgp.solution.ga.mutations import swap_mutation
+from tgp.solution.ga.mutations import inversion_mutation
 from tgp.types import SolutionType
 
 
@@ -266,14 +266,14 @@ def ga(
     alpha: float,
     beta: float,
     population_size_percent: float = 0.23,
-    generations_percent: float = 0.37,
-    elitism_rate: float = 0.11,
-    mutation_rate: float = 0.01,
-    lns_rate: float = 0.48,
-    lns_num_to_remove_percent: float = 0.24,
+    generations_percent: float = 0.21,
+    elitism_rate: float = 0.17,
+    mutation_rate: float = 0.04,
+    lns_rate: float = 0.04,
+    lns_num_to_remove_percent: float = 0.25,
     tournament_size_percent: float = 0.14,
     crossover: Callable[[Individual, Individual], Individual] = iox,
-    mutation: Callable[[list[int]], None] = swap_mutation,
+    mutation: Callable[[list[int]], None] = inversion_mutation,
 ):
     nnz_nodes = nodes[nodes != 0]
     p_size = int(len(nnz_nodes) * population_size_percent)
