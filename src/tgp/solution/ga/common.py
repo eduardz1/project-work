@@ -58,14 +58,44 @@ def evaluate_solution(
     alpha: float,
     beta: float,
 ) -> float:
+    """
+    Evaluate the total cost of a solution path.
+
+    Because the cost function is non-linear, we cannot sum costs per edge when
+    intermediate nodes are present. Instead, we accumulate the distance for each
+    consecutive edge where the carried weight stays constant and compute
+    the cost once with the full shortest-path distance for that section.
+
+    Args:
+        solution (SolutionType): The solution path to evaluate, as a list of (city, weight) tuples.
+        distance_matrix (npt.NDArray[np.float32]): A precomputed matrix of distances between cities.
+        alpha (float): The alpha parameter of the cost function.
+        beta (float): The beta parameter of the cost function.
+
+    Returns:
+        float: The total cost of the solution path.
+    """
+
+    if len(solution) < 2:
+        return 0.0
+
     total_cost = 0.0
+    accumulated_dist = np.float32(0.0)
+    current_weight = solution[0][1]
 
     for i in range(len(solution) - 1):
         city_from, weight_from = solution[i]
-        city_to, _ = solution[i + 1]
+        city_to = solution[i + 1][0]
 
-        dist = distance_matrix[city_from, city_to]
-        total_cost += cost(dist, weight_from, alpha, beta)
+        if weight_from != current_weight:
+            total_cost += cost(accumulated_dist, current_weight, alpha, beta)
+            accumulated_dist = np.float32(0.0)
+            current_weight = weight_from
+
+        accumulated_dist += distance_matrix[city_from, city_to]
+
+    if accumulated_dist > 0.0:
+        total_cost += cost(accumulated_dist, current_weight, alpha, beta)
 
     return total_cost
 
