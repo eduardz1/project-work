@@ -169,10 +169,7 @@ def predecessors_to_solution(
             load += float(golds[city])
             sol.append((city, load))
 
-        sol.append((0, load))
-
-        if i < len(routes) - 1:
-            sol.append((0, 0.0))
+        sol.append((0, 0.0))
 
     return sol
 
@@ -205,7 +202,7 @@ def remove_bulk(
     """
 
     new_graph = G.copy()
-    sol: SolutionType = []
+    sol: SolutionType = [(0, 0.0)]
 
     L_stars = [optimal_fraction_size(alpha, beta, dists[0, node]) for node in G.nodes]
 
@@ -225,13 +222,15 @@ def remove_bulk(
         new_graph.nodes[node]["gold"] = G.nodes[node]["gold"] % L_stars[node]
 
         for _ in range(num_fractions):
-            for city in paths[0][node]:
+            # Depot -> node (skip depot, already there from previous trip)
+            for city in paths[0][node][1:]:
                 sol.append((city, 0.0))
-
             sol[-1] = (node, L_stars[node])
 
+            # Node -> depot (skip node, already there)
             for city in paths[node][0][1:]:
                 sol.append((city, L_stars[node]))
+            sol[-1] = (0, 0.0)
 
     return new_graph, sol
 

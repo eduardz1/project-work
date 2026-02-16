@@ -10,14 +10,18 @@ def validate_solution(
     G: nx.Graph,
     verbose: bool = True,
 ) -> tuple[bool, list[str]]:
-    """Validate solution correctness: depot start/end, weight tracking, gold collection."""
+    """Validate solution correctness: edges, depot start/end, weight tracking, gold collection."""
     errors = []
 
     if not solution:
         errors.append("Solution is empty")
         return False, errors
 
-    if solution[0][0] != 0 or solution[0][1] != 0.0:
+    for (c1, _), (c2, _) in zip(solution[:-1], solution[1:]):
+        if not G.has_edge(c1, c2):
+            errors.append(f"Invalid move from city {c1} to city {c2}: no edge in graph")
+
+    if solution[0] != (0, 0.0):
         errors.append(f"Solution must start at (0, 0.0), got {solution[0]}")
 
     if solution[-1][0] != 0:
@@ -29,40 +33,16 @@ def validate_solution(
         curr_city, curr_weight = solution[i]
         next_city, next_weight = solution[i + 1]
 
-        if curr_city == 0 and next_city == 0:
-            if next_weight > curr_weight:
-                errors.append(
-                    f"Step {i}: Weight increased at depot: {curr_weight} → {next_weight}"
-                )
+        if next_city != 0 and next_weight < curr_weight:
+            errors.append(
+                f"Step {i}: Weight decreased moving to city {next_city}: {curr_weight} → {next_weight}"
+            )
             continue
 
-        if curr_city not in G.nodes:
-            errors.append(f"Step {i}: Unknown node {curr_city}")
-        if next_city not in G.nodes:
-            errors.append(f"Step {i}: Unknown node {next_city}")
-
-        if curr_city == next_city:
-            errors.append(f"Step {i}: No movement (stayed at city {curr_city})")
-            continue
-
-        weight_diff = next_weight - curr_weight
-        if next_city == 0:
-            if abs(weight_diff) > EPSILON:
-                errors.append(
-                    f"Step {i}: Weight changed returning to depot: {curr_weight} → {next_weight}"
-                )
-        else:
-            gold_at_dest = G.nodes[next_city]["gold"]
-            if abs(weight_diff) < EPSILON:
-                pass
-            elif abs(weight_diff - gold_at_dest) < EPSILON:
-                gold_collected[next_city] += gold_at_dest
-            elif weight_diff > 0:
-                gold_collected[next_city] += weight_diff
-            else:
-                errors.append(
-                    f"Step {i}: Weight decreased moving to city {next_city}: {curr_weight} → {next_weight}"
-                )
+        if next_city != 0 and curr_city != next_city:
+            gold_picked_up = next_weight - curr_weight
+            if gold_picked_up > 0:
+                gold_collected[next_city] += gold_picked_up
 
     for node in G.nodes:
         if node == 0:

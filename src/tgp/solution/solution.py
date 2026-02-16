@@ -6,6 +6,27 @@ from tgp.solution.ga.ga import ga, predecessors_to_solution, remove_bulk
 from tgp.types import SolutionType
 
 
+def expand_solution(
+    s: SolutionType, shortest_paths: dict[int, dict[int, list[int]]]
+) -> SolutionType:
+    """Expand solution to include all intermediate steps between cities."""
+    if not s:
+        return []
+
+    expanded = [s[0]]
+    for i in range(1, len(s)):
+        c_prev, gold_prev = s[i - 1]
+        c_curr, gold_curr = s[i]
+        path = shortest_paths[c_prev][c_curr]
+
+        for c in path[1:-1]:
+            expanded.append((c, gold_prev))
+
+        expanded.append((c_curr, gold_curr))
+
+    return expanded
+
+
 def solution(P: Problem, **kwargs) -> SolutionType:
     """
     Compute the solution of the Traveling Goblin Problem.
@@ -82,5 +103,9 @@ def solution(P: Problem, **kwargs) -> SolutionType:
         best_ga = ga(nodes_array, P.dists, golds_array, P.alpha, P.beta, **kwargs)
 
     ga_sol = predecessors_to_solution(best_ga.tour, best_ga.predecessors, golds_array)
+    ga_sol_expanded = expand_solution(ga_sol, P.paths)
 
-    return sol + ga_sol
+    if sol: # skip duplicate ending
+        ga_sol_expanded = ga_sol_expanded[1:]
+
+    return sol + ga_sol_expanded

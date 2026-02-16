@@ -18,7 +18,9 @@ def test_ga_beta_gt_one():
     assert total_cost > 0.0
 
     valid, errors = validate_solution(sol, P.graph)
-    assert valid, f"Solution is invalid: {errors}"
+    assert valid, (
+        f"Solution is invalid: {errors}, first 10 elements of path are {sol[:10]}"
+    )
 
 
 def test_ga_beta_eq_one():
@@ -35,7 +37,9 @@ def test_ga_beta_eq_one():
     assert total_cost > 0.0
 
     valid, errors = validate_solution(sol, P.graph)
-    assert valid, f"Solution is invalid: {errors}"
+    assert valid, (
+        f"Solution is invalid: {errors}, first 10 elements of path are {sol[:10]}"
+    )
 
 
 def test_ga_beta_lt_one():
@@ -52,4 +56,6 @@ def test_ga_beta_lt_one():
     assert total_cost > 0.0
 
     valid, errors = validate_solution(sol, P.graph)
-    assert valid, f"Solution is invalid: {errors}"
+    assert valid, (
+        f"Solution is invalid: {errors}, first 10 elements of path are {sol[:10]}"
+    )
